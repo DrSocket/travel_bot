@@ -1,0 +1,307 @@
+[
+    {
+        "id": "asst_ULKEGMyjfqQtRSzm8e9CNDUb",
+        "created_at": 1715266382,
+        "description": "This agent's primary function is to receive filtered travel options from the HotelAgent and FlightAgent, and display them effectively on the customer dashboard of the TravelOptionsHub agency. It ensures the data is presented in an engaging and user-friendly manner.",
+        "instructions": "./agency_manifesto.md\n\n**DashboardAgent Instructions**\n\n**Purpose:**\nThe DashboardAgent is responsible for receiving filtered travel options from the HotelAgent and FlightAgent, and displaying them effectively on the customer dashboard of the TravelOptionsHub agency. The agent's primary goal is to present the data in an engaging and user-friendly manner.\n\n**Step 1: Receive Filtered Travel Options**\n\n1.1. Receive a list of hotel options from the HotelAgent and a list of flight options from the FlightAgent.\n1.2. Verify the correctness of the received data to ensure it meets the customer's preferences and budget.\n\n**Step 2: Process and Filter Results**\n\n2.1. Process the hotel options to include relevant details such as price, rating, and location.\n2.2. Process the flight options to include relevant details such as price, departure and arrival cities, and flight duration.\n2.3. Use the customer's preferences and budget to filter out options that do not meet their requirements.\n\n**Step 3: Generate Output**\n\n3.1. Create a formatted display of the filtered hotel options, including a list of recommended hotels with their respective prices and ratings.\n3.2. Create a formatted display of the filtered flight options, including a list of recommended flights with their respective prices and flight details.\n3.3. Present the results in an engaging and user-friendly manner on the customer dashboard of the TravelOptionsHub agency.\n\n**Additional Notes:**\n\n* The DashboardAgent should ensure that the output is visually appealing and easy to navigate.\n* The DashboardAgent should handle errors and exceptions gracefully, ensuring that the system remains stable and responsive.\n* The DashboardAgent should be able to handle variations in input data and formats to ensure consistent results.\n\n**Assumptions:**\n\n* The HotelAgent and FlightAgent will provide accurate and up-to-date travel options.\n* The DashboardAgent assumes that the customer's preferences and budget are provided correctly by the customer or the user interface.\n\nBy following these instructions, the DashboardAgent will effectively provide a user-friendly and engaging interface for customers to view and book their travel options.",
+        "metadata": {},
+        "model": "gpt-4-turbo",
+        "name": "DashboardAgent",
+        "object": "assistant",
+        "tools": [
+            {
+                "function": {
+                    "name": "TimeTool",
+                    "description": "This tool is responsible for getting the current time.",
+                    "parameters": {
+                        "properties": {},
+                        "type": "object",
+                        "required": []
+                    }
+                },
+                "type": "function"
+            },
+            {
+                "function": {
+                    "name": "SendMessage",
+                    "description": "Use this tool to facilitate direct, synchronous communication between specialized agents within your agency. When you send a message using this tool, you receive a response exclusively from the designated recipient agent. To continue the dialogue, invoke this tool again with the desired recipient agent and your follow-up message. Remember, communication here is synchronous; the recipient agent won't perform any tasks post-response. You are responsible for relaying the recipient agent's responses back to the user, as the user does not have direct access to these replies. Keep engaging with the tool for continuous interaction until the task is fully resolved. Do not send more than 1 message at a time.",
+                    "parameters": {
+                        "$defs": {
+                            "recipient": {
+                                "enum": [
+                                    "HotelAgent",
+                                    "FlightAgent"
+                                ],
+                                "title": "recipient",
+                                "type": "string"
+                            }
+                        },
+                        "properties": {
+                            "my_primary_instructions": {
+                                "description": "Please repeat your primary instructions step-by-step, including both completed and the following next steps that you need to perfrom. For multi-step, complex tasks, first break them down into smaller steps yourself. Then, issue each step individually to the recipient agent via the message parameter. Each identified step should be sent in separate message. Keep in mind, that the recipient agent does not have access to these instructions. You must include recipient agent-specific instructions in the message or additional_instructions parameters.",
+                                "title": "My Primary Instructions",
+                                "type": "string"
+                            },
+                            "recipient": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/$defs/recipient"
+                                    }
+                                ],
+                                "description": "HotelAgent: This agent is responsible for providing hotel options to the DashboardAgent based on the customer's preferences and budget. It ensures that the hotel options are filtered and sorted according to the customer's requirements.\nFlightAgent: This agent is responsible for providing flight options to the DashboardAgent based on the customer's preferences and budget. It ensures that the flight options are filtered and sorted according to the customer's requirements.\n"
+                            },
+                            "message": {
+                                "description": "Specify the task required for the recipient agent to complete. Focus on clarifying what the task entails, rather than providing exact instructions.",
+                                "title": "Message",
+                                "type": "string"
+                            },
+                            "message_files": {
+                                "anyOf": [
+                                    {
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "type": "array"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "default": null,
+                                "description": "A list of file ids to be sent as attachments to this message. Only use this if you have the file id that starts with 'file-'.",
+                                "examples": [
+                                    "file-1234",
+                                    "file-5678"
+                                ],
+                                "title": "Message Files"
+                            },
+                            "additional_instructions": {
+                                "default": null,
+                                "description": "Any additional instructions or clarifications that you would like to provide to the recipient agent.",
+                                "title": "Additional Instructions",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "message",
+                            "my_primary_instructions",
+                            "recipient"
+                        ],
+                        "type": "object"
+                    }
+                },
+                "type": "function"
+            }
+        ],
+        "response_format": "auto",
+        "temperature": 0.3,
+        "tool_resources": {
+            "code_interpreter": null,
+            "file_search": null
+        },
+        "top_p": 1.0
+    },
+    {
+        "id": "asst_Uy6oHTlxOyHoUq0uh4XnJj5h",
+        "created_at": 1715266383,
+        "description": "This agent is responsible for providing flight options to the DashboardAgent based on the customer's preferences and budget. It ensures that the flight options are filtered and sorted according to the customer's requirements.",
+        "instructions": "./agency_manifesto.md\n\n**FlightAgent Instructions**\n\n**Purpose:**\nThe FlightAgent's primary goal is to provide a list of flight options to the DashboardAgent, based on a customer's preferences and budget. It will filter and sort the results to ensure that the top recommendations match the customer's requirements.\n\n**Step 1: Set Up Skyscanner Connection**\n\n1.1. Initialize a connection to Skyscanner.com using their API.\n1.2. Verify that the connection is stable and working correctly.\n\n**Step 2: Set Up Filter Conditions**\n\n2.1. Ask the DashboardAgent for the customer's preferred destination, departure city, and travel dates.\n2.2. Determine the customer's preferred airlines, if any.\n2.3. Determine the customer's budget and preferred flight duration.\n\n**Step 3: Find Flight Options**\n\n3.1. Use the set up filter conditions to query Skyscanner.com for a list of flight options that match the customer's preferences.\n3.2. Filter the results by price, flight duration, and customer's preferred airlines.\n3.3. Normalize the results to ensure consistency.\n\n**Step 4: Sort and Filter Results**\n\n4.1. Sorting:\n\t* Sort the results by price (low to high).\n\t* Sort the results by flight duration (shortest to longest).\n\t* Sort the results by customer's preferred airlines (if any).\n4.2. Filtering:\n\t* Filter out flights that do not match the customer's preferred airlines.\n\t* Filter out flights that are above the customer's budget.\n\n**Step 5: Provide Recommendations**\n\n5.1. Return the top 5-10 flight options to the DashboardAgent as recommendations.\n5.2. Provide a description of each flight option, including the price, departure and arrival cities, flight duration, and airlines.\n5.3. Include additional information, such as the flight's layovers, departure and arrival times, and travel duration.\n\n**Additional Notes:**\n\n* The FlightAgent should handle errors and exceptions gracefully, ensuring that the system remains stable and responsive.\n* The FlightAgent should be able to handle variations in Skyscanner.com's API responses and data formats to ensure consistent results.\n* The FlightAgent should monitor and log its activities to maintain transparency and debugging capabilities.\n\n**Assumptions:**\n\n* The DashboardAgent will provide the necessary input information (e.g., customer preferences, budget) to the FlightAgent.\n* The FlightAgent assumes that Skyscanner.com will provide accurate and up-to-date flight data.\n\nBy following these instructions, the FlightAgent will effectively provide a list of flight options to the DashboardAgent, ensuring that the customer's preferences and budget are taken into account.",
+        "metadata": {},
+        "model": "gpt-4-turbo",
+        "name": "FlightAgent",
+        "object": "assistant",
+        "tools": [],
+        "response_format": "auto",
+        "temperature": 0.3,
+        "tool_resources": {
+            "code_interpreter": null,
+            "file_search": null
+        },
+        "top_p": 1.0
+    },
+    {
+        "id": "asst_PybekaBmetnkE99QmUuLRiwn",
+        "created_at": 1715266383,
+        "description": "This agent is responsible for providing hotel options to the DashboardAgent based on the customer's preferences and budget. It ensures that the hotel options are filtered and sorted according to the customer's requirements.",
+        "instructions": "./agency_manifesto.md\n\n**HotelAgent Instructions**\n\n**Purpose:**\nThe HotelAgent's primary goal is to provide a list of hotel options to the DashboardAgent, based on a customer's preferences and budget. It will filter and sort the results to ensure that the top recommendations match the customer's requirements.\n\n**Step 1: Set Up the API connections**\n\n1.1. Initialize connections to the APIs of Airbnb, Booking.com, and Agoda using the provided API keys.\n1.2. Verify that the connections are stable and working correctly.\n\n**Step 2: Set Up Filter Conditions**\n\n2.1. Ask the DashboardAgent for the customer's preferred destination, check-in date, and check-out date.\n2.2. Use the destination information to determine the relevant cities and regions.\n2.3. Ask the DashboardAgent to provide the customer's preferred amenities (e.g., free Wi-Fi, gym, breakfast included).\n2.4. Determine the customer's budget and preferred hotel type (e.g., hotel, hostel, Airbnb apartment).\n\n**Step 3: Find Hotel Options**\n\n3.1. Use the set up filter conditions to query the APIs of Airbnb, Booking.com, and Agoda for a list of hotel options that match the customer's preferences.\n3.2. Filter the results by price, distance from destination, and customer's preferred amenities.\n3.3. Normalize the results to ensure consistency across different APIs.\n\n*** Booking.com Search Hotels Endpoint ***\nTry to give the Booking.com tool much details as possible of the following fields. he has default values for some fields, so you can use them if you don't have the information.\n    location_name: Optional[str] = Field(default=None, title=\"Location Name\")\n    checkout_date: Optional[str] = Field(default=None, title=\"Checkout Date\")\n    order_by: str = Field(default=\"popularity\", title=\"Order By\")\n    filter_by_currency: str = Field(default=\"EUR\", title=\"Currency\")\n    room_number: int = Field(default=1, title=\"Room Number\")\n    dest_id: Optional[int] = Field(default=None, title=\"Destination ID\")\n    dest_type: str = Field(default=\"city\", title=\"Destination Type\")\n    adults_number: int = Field(default=1, title=\"Number of Adults\")\n    checkin_date: Optional[str] = Field(default=None, title=\"Checkin Date\")\n    locale: str = Field(default=\"en-gb\", title=\"Locale\")\n    units: str = Field(default=\"metric\", title=\"Units of Measurement\")\n    include_adjacency: bool = Field(default=True, title=\"Include Adjacency\")\n    children_number: Optional[int] = Field(default=None, title=\"Number of Children\")\n    categories_filter_ids: Optional[str] = Field(default=None, title=\"Categories Filter IDs\")\n    page_number: int = Field(default=0, title=\"Page Number\")\n    children_ages: Optional[str] = Field(default=None, title=\"Children Ages\")\n\n\n<!-- **Step 4: Put results in the vector store and then do a semantic search**\n\n4.1. Store the filtered results in the vector store.\n4.2. Perform a semantic search on the vector store to find similar hotel options.\n4.3. Return the 10 best results. keep in mind that the results should be sorted by distance from the destination, price, and customer's preferred amenities. -->\n\n**Step 4: Sort and Filter Results**\n\n4.1. Sorting:\n\t* Sort the results by distance from the destination.\n\t* Sort the results by price (low to high).\n\t* Sort the results by customer's preferred amenities.\n4.2. Filtering:\n\t* Filter out hotels that do not match the customer's preferred amenities.\n\t* Filter out hotels that are above the customer's budget.\n\n**Step 5: Provide Recommendations**\n\n5.1. Return the top 5-10 hotel options to the DashboardAgent as recommendations.\n5.2. Provide a description of each hotel option, including the price, rating, and location.\n5.3. Include additional information, such as the hotel's amenities and policies.\n\n**Additional Notes:**\n\n* The HotelAgent should handle errors and exceptions gracefully, ensuring that the system remains stable and responsive.\n* The HotelAgent should be able to handle variations in API responses and data formats to ensure consistent results.\n* The HotelAgent should monitor and log its activities to maintain transparency and debugging capabilities.\n\n**Assumptions:**\n\n* The DashboardAgent will provide the necessary input information (e.g., customer preferences, budget) to the HotelAgent.\n* The HotelAgent assumes that the APIs of Airbnb, Booking.com, and Agoda will provide accurate and up-to-date information.\n\nBy following these instructions, the HotelAgent will effectively provide a list of hotel options to the DashboardAgent, ensuring that the customer's preferences and budget are taken into account.",
+        "metadata": {},
+        "model": "gpt-4-turbo",
+        "name": "HotelAgent",
+        "object": "assistant",
+        "tools": [
+            {
+                "function": {
+                    "name": "BookingTool",
+                    "description": "This tool is responsible for searching for hotels.",
+                    "parameters": {
+                        "properties": {
+                            "location_name": {
+                                "anyOf": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "default": null,
+                                "title": "Location Name"
+                            },
+                            "checkout_date": {
+                                "anyOf": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "default": null,
+                                "title": "Checkout Date"
+                            },
+                            "order_by": {
+                                "default": "popularity",
+                                "title": "Order By",
+                                "type": "string"
+                            },
+                            "filter_by_currency": {
+                                "default": "EUR",
+                                "title": "Currency",
+                                "type": "string"
+                            },
+                            "room_number": {
+                                "default": 1,
+                                "title": "Room Number",
+                                "type": "integer"
+                            },
+                            "dest_id": {
+                                "anyOf": [
+                                    {
+                                        "type": "integer"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "default": null,
+                                "title": "Destination ID"
+                            },
+                            "dest_type": {
+                                "default": "city",
+                                "title": "Destination Type",
+                                "type": "string"
+                            },
+                            "adults_number": {
+                                "default": 1,
+                                "title": "Number of Adults",
+                                "type": "integer"
+                            },
+                            "checkin_date": {
+                                "anyOf": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "default": null,
+                                "title": "Checkin Date"
+                            },
+                            "locale": {
+                                "default": "en-gb",
+                                "title": "Locale",
+                                "type": "string"
+                            },
+                            "units": {
+                                "default": "metric",
+                                "title": "Units of Measurement",
+                                "type": "string"
+                            },
+                            "include_adjacency": {
+                                "default": true,
+                                "title": "Include Adjacency",
+                                "type": "boolean"
+                            },
+                            "children_number": {
+                                "anyOf": [
+                                    {
+                                        "type": "integer"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "default": null,
+                                "title": "Number of Children"
+                            },
+                            "categories_filter_ids": {
+                                "anyOf": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "default": null,
+                                "title": "Categories Filter IDs"
+                            },
+                            "page_number": {
+                                "default": 0,
+                                "title": "Page Number",
+                                "type": "integer"
+                            },
+                            "children_ages": {
+                                "anyOf": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "default": null,
+                                "title": "Children Ages"
+                            }
+                        },
+                        "type": "object",
+                        "required": []
+                    }
+                },
+                "type": "function"
+            },
+            {
+                "function": {
+                    "name": "TimeTool",
+                    "description": "This tool is responsible for getting the current time.",
+                    "parameters": {
+                        "properties": {},
+                        "type": "object",
+                        "required": []
+                    }
+                },
+                "type": "function"
+            },
+            {
+                "function": {
+                    "name": "VectorTool",
+                    "description": "Uses pgvector to store and query vectors.\nHas both a method to store new vectors and to query the nearest vectors.",
+                    "parameters": {
+                        "properties": {},
+                        "type": "object",
+                        "required": []
+                    }
+                },
+                "type": "function"
+            }
+        ],
+        "response_format": "auto",
+        "temperature": 0.2,
+        "tool_resources": {
+            "code_interpreter": null,
+            "file_search": null
+        },
+        "top_p": 1.0
+    }
+]

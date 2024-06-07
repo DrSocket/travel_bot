@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from orm_router import router as organization_router
+# from orm_router import router as agent_router
+from agent_router import router as agent_router
 from auth import get_current_user, AuthBearer
 
 app = FastAPI()
@@ -14,7 +15,7 @@ app.add_middleware(
 )
 
 # Include the organization router
-app.include_router(organization_router, prefix="/api")
+app.include_router(agent_router, prefix="/api")
 
 @app.get("/upload/healthz", tags=["Health"])
 async def healthz():
